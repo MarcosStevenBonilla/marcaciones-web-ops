@@ -14,6 +14,8 @@ import type {
   CreateUsuarioRequest,
   CreateEmpleadoRequest,
   CreateOperativoRequest,
+  ExportPreviewData,
+  ExportPreviewRow,
 } from './types';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api/v1';
@@ -247,6 +249,41 @@ export async function getQrUrl(empleadoId: number): Promise<string> {
     responseType: 'blob',
   });
   return URL.createObjectURL(data);
+}
+
+export interface ExportFilters {
+  empleado_id?: number;
+  operativo_id?: number;
+  fecha_desde?: string;
+  fecha_hasta?: string;
+  search?: string;
+}
+
+export async function exportPreview(
+  filters: ExportFilters,
+  page = 1,
+  limit = 50
+): Promise<{ total: number; page: number; limit: number; totalPages: number; registros: ExportPreviewRow[] }> {
+  const { data } = await api.get<ApiResponse<ExportPreviewData>>('/asistencias/exportar/preview', {
+    params: { ...filters, page, limit },
+  });
+  return data.data;
+}
+
+export async function exportExcel(filters: ExportFilters): Promise<Blob> {
+  const { data } = await api.get('/asistencias/exportar/excel', {
+    params: filters,
+    responseType: 'blob',
+  });
+  return data;
+}
+
+export async function exportPdf(filters: ExportFilters): Promise<Blob> {
+  const { data } = await api.get('/asistencias/exportar/pdf', {
+    params: filters,
+    responseType: 'blob',
+  });
+  return data;
 }
 
 export { api, setTokens, getAccessToken };

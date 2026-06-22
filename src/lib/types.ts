@@ -150,3 +150,26 @@ export interface CreateOperativoRequest {
   fecha_fin: string;
   activo?: boolean;
 }
+
+export interface ExportPreviewRow {
+  id: number;
+  empleado: string;
+  codigo_empleado: string;
+  operativo: string;
+  tipo: 'ENTRADA' | 'SALIDA';
+  fecha: string;
+  hora: string;
+  gps_lat: number;
+  gps_lng: number;
+  precision_gps: number | null;
+  observaciones: string | null;
+  registrado_por: string;
+}
+
+export interface ExportPreviewData {
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+  registros: ExportPreviewRow[];
+}

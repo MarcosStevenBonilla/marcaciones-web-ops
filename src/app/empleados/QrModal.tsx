@@ -34,22 +34,22 @@ export default function QrModal({ empleadoId, codigo, nombre, onClose }: Props) 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={onClose}>
       <div
-        className="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-sm mx-4"
+        className="alm-card-flat p-6 w-full max-w-sm mx-4"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-4">
-          <h3 className="font-semibold text-gray-900">Código QR</h3>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+          <h3 className="font-semibold text-lg">Código QR</h3>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 p-1">
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        <p className="text-sm text-gray-500 mb-4 text-center">{nombre}</p>
+        <p className="text-sm text-[#6B7280] text-center mb-4">{nombre}</p>
 
         <div className="flex justify-center mb-4">
           {loading ? (
             <div className="w-48 h-48 flex items-center justify-center">
-              <Loader2 className="w-8 h-8 animate-spin text-blue-900" />
+              <div className="alm-spinner" />
             </div>
           ) : error ? (
             <div className="w-48 h-48 flex items-center justify-center text-red-500 text-sm">{error}</div>
@@ -63,7 +63,7 @@ export default function QrModal({ empleadoId, codigo, nombre, onClose }: Props) 
         <button
           onClick={handleDownload}
           disabled={loading || !!error}
-          className="w-full bg-blue-900 hover:bg-blue-800 text-white font-medium py-2 px-4 rounded-lg transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+          className="alm-btn-primary w-full flex items-center justify-center gap-2"
         >
           <Download className="w-4 h-4" /> Descargar PNG
         </button>

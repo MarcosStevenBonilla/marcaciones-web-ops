@@ -4,7 +4,7 @@ import { Suspense, useState, useEffect, type FormEvent } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { createUsuario, updateUsuario, getUsuario } from '@/lib/api';
-import { Loader2, Save, ArrowLeft } from 'lucide-react';
+import { Save, ArrowLeft } from 'lucide-react';
 
 function UsuarioForm() {
   const { isAdmin } = useAuth();
@@ -74,75 +74,75 @@ function UsuarioForm() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-blue-900" />
+        <div className="alm-spinner alm-spinner-lg" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen p-6">
       <div className="max-w-2xl mx-auto">
         <button
           onClick={() => router.push('/usuarios')}
-          className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-6 transition-colors"
+          className="alm-glass-btn-sm flex items-center gap-2 mb-6"
         >
           <ArrowLeft className="w-4 h-4" /> Volver a usuarios
         </button>
 
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <h1 className="text-xl font-bold text-gray-900 mb-6">
+        <div className="alm-card-flat p-6">
+          <h1 className="text-xl font-bold mb-6">
             {editId ? 'Editar Usuario' : 'Nuevo Usuario'}
           </h1>
 
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4 text-sm">
+            <div className="alm-alert alm-alert-error mb-4">
               {error}
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
+              <label className="block text-sm font-medium mb-1">Nombre</label>
               <input
                 type="text"
                 value={form.nombre}
                 onChange={(e) => setForm({ ...form, nombre: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                className="alm-input w-full"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Correo electrónico</label>
+              <label className="block text-sm font-medium mb-1">Correo electrónico</label>
               <input
                 type="email"
                 value={form.correo}
                 onChange={(e) => setForm({ ...form, correo: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                className="alm-input w-full"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium mb-1">
                 Contraseña {editId && '(dejar vacío para mantener)'}
               </label>
               <input
                 type="password"
                 value={form.password}
                 onChange={(e) => setForm({ ...form, password: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                className="alm-input w-full"
                 placeholder={editId ? '••••••••' : '••••••••'}
                 required={!editId}
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Rol</label>
+              <label className="block text-sm font-medium mb-1">Rol</label>
               <select
                 value={form.rol}
                 onChange={(e) => setForm({ ...form, rol: e.target.value as 'ADMIN' | 'SUPERVISOR' })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                className="alm-select w-full"
               >
                 <option value="SUPERVISOR">SUPERVISOR</option>
                 <option value="ADMIN">ADMIN</option>
@@ -150,11 +150,11 @@ function UsuarioForm() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Estado</label>
+              <label className="block text-sm font-medium mb-1">Estado</label>
               <select
                 value={form.activo ? 'true' : 'false'}
                 onChange={(e) => setForm({ ...form, activo: e.target.value === 'true' })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                className="alm-select w-full"
               >
                 <option value="true">Activo</option>
                 <option value="false">Inactivo</option>
@@ -165,16 +165,16 @@ function UsuarioForm() {
               <button
                 type="button"
                 onClick={() => router.push('/usuarios')}
-                className="flex-1 border border-gray-300 text-gray-700 font-medium py-2.5 px-4 rounded-lg hover:bg-gray-50 transition-colors"
+                className="alm-btn-secondary flex-1"
               >
                 Cancelar
               </button>
               <button
                 type="submit"
                 disabled={saving}
-                className="flex-1 bg-blue-900 hover:bg-blue-800 text-white font-medium py-2.5 px-4 rounded-lg transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                className="alm-btn-primary flex-1 flex items-center justify-center gap-2 disabled:opacity-50"
               >
-                {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
+                {saving ? <div className="alm-spinner" /> : <Save className="w-5 h-5" />}
                 {saving ? 'Guardando...' : 'Guardar'}
               </button>
             </div>
@@ -190,7 +190,7 @@ export default function UsuarioFormPage() {
     <Suspense
       fallback={
         <div className="min-h-screen flex items-center justify-center">
-          <Loader2 className="w-8 h-8 animate-spin text-blue-900" />
+          <div className="alm-spinner alm-spinner-lg" />
         </div>
       }
     >

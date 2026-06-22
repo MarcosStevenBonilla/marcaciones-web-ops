@@ -10,10 +10,7 @@ import {
   Shield,
   Plus,
   Trash2,
-  Loader2,
   LogOut,
-  Menu,
-  X,
   Clock,
   Building2,
   ClipboardList,
@@ -24,7 +21,6 @@ export default function UsuariosPage() {
   const router = useRouter();
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
   const [pageLoading, setPageLoading] = useState(true);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     getUsuarios()
@@ -42,19 +38,19 @@ export default function UsuariosPage() {
     }
   }
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-blue-900" />
-      </div>
-    );
-  }
-
   useEffect(() => {
     if (!user && !loading) {
       router.push('/login');
     }
   }, [user, loading, router]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="alm-spinner alm-spinner-lg" />
+      </div>
+    );
+  }
 
   if (!user) {
     return null;
@@ -71,36 +67,29 @@ export default function UsuariosPage() {
   return (
     <div className="min-h-screen flex">
       <aside
-        className={`fixed inset-y-0 left-0 z-30 w-64 bg-blue-900 text-white transform transition-transform ${
-          sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        } lg:relative lg:translate-x-0`}
+        className="hidden lg:flex lg:w-64 alm-sidebar shrink-0 flex-col"
       >
-        <div className="p-6">
+        <div className="alm-sidebar-brand p-6">
           <h2 className="text-xl font-bold">ALMAPAC</h2>
-          <p className="text-blue-200 text-sm mt-1">Sistema de Marcaciones</p>
+          <p className="text-sm mt-1">Sistema de Marcaciones</p>
         </div>
-        <nav className="mt-4 space-y-1 px-3">
+        <nav className="alm-sidebar-nav mt-4 space-y-1 px-3">
           {menuItems.map((item) => (
             <button
               key={item.href}
-              onClick={() => {
-                router.push(item.href);
-                setSidebarOpen(false);
-              }}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
-                item.active ? 'bg-blue-800 text-white' : 'text-blue-100 hover:bg-blue-800 hover:text-white'
-              }`}
+              onClick={() => router.push(item.href)}
+              className={`alm-sidebar-item ${item.active ? 'active' : ''}`}
             >
               <item.icon className="w-5 h-5" />
               {item.label}
             </button>
           ))}
         </nav>
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-blue-800">
-          <div className="text-sm text-blue-200 mb-2 truncate">{user.nombre}</div>
+        <div className="alm-sidebar-footer">
+          <div className="text-sm mb-2 truncate">{user.nombre}</div>
           <button
             onClick={logout}
-            className="flex items-center gap-2 text-blue-200 hover:text-white text-sm transition-colors"
+            className="alm-sidebar-item"
           >
             <LogOut className="w-4 h-4" /> Cerrar Sesión
           </button>
@@ -108,20 +97,17 @@ export default function UsuariosPage() {
       </aside>
 
       <div className="flex-1 flex flex-col min-h-screen">
-        <header className="bg-white border-b border-gray-200 px-6 py-4 flex items-center gap-4 lg:hidden">
-          <button onClick={() => setSidebarOpen(!sidebarOpen)} className="text-gray-600">
-            {sidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
+        <header className="lg:hidden bg-white px-6 py-4 flex items-center border-b" style={{borderColor: '#E5E5E5'}}>
           <h1 className="font-semibold text-lg">Usuarios</h1>
         </header>
 
-        <main className="flex-1 p-6">
+        <main className="flex-1 p-6 pb-20 lg:pb-6 flex flex-col min-h-0">
           <div className="flex items-center justify-between mb-6">
-            <h1 className="text-2xl font-bold text-gray-900 hidden lg:block">Usuarios del Sistema</h1>
+            <h1 className="text-2xl font-bold hidden lg:block">Usuarios del Sistema</h1>
             {isAdmin && (
               <button
                 onClick={() => router.push('/usuarios/nuevo')}
-                className="bg-blue-900 hover:bg-blue-800 text-white font-medium py-2 px-4 rounded-lg text-sm transition-colors flex items-center gap-2"
+                className="alm-btn-primary-sm flex items-center gap-2"
               >
                 <Plus className="w-4 h-4" /> Nuevo Usuario
               </button>
@@ -130,60 +116,58 @@ export default function UsuariosPage() {
 
           {pageLoading ? (
             <div className="flex justify-center py-12">
-              <Loader2 className="w-8 h-8 animate-spin text-blue-900" />
+        <div className="alm-spinner alm-spinner-lg" />
             </div>
           ) : (
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            <div className="alm-table-wrap flex-1 overflow-auto">
               <div className="overflow-x-auto">
-                <table className="w-full">
+                <table className="alm-table w-full">
                   <thead>
-                    <tr className="bg-gray-50 border-b border-gray-200">
-                      <th className="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase">
+                    <tr className="bg-[#F5F5F5] border-b border-[#E5E5E5]">
+                      <th className="text-left px-6 py-3 text-xs font-semibold text-[#6B7280] uppercase">
                         Nombre
                       </th>
-                      <th className="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase">
+                      <th className="text-left px-6 py-3 text-xs font-semibold text-[#6B7280] uppercase">
                         Correo
                       </th>
-                      <th className="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase">
+                      <th className="text-left px-6 py-3 text-xs font-semibold text-[#6B7280] uppercase">
                         Rol
                       </th>
-                      <th className="text-left px-6 py-3 text-xs font-semibold text-gray-500 uppercase">
+                      <th className="text-left px-6 py-3 text-xs font-semibold text-[#6B7280] uppercase">
                         Estado
                       </th>
-                      <th className="text-right px-6 py-3 text-xs font-semibold text-gray-500 uppercase">
+                      <th className="text-right px-6 py-3 text-xs font-semibold text-[#6B7280] uppercase">
                         Acciones
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-200">
+                  <tbody className="divide-y divide-[#E5E5E5]">
                     {usuarios.map((usr) => (
-                      <tr key={usr.id} className="hover:bg-gray-50 transition-colors">
-                        <td className="px-6 py-4 text-sm font-medium text-gray-900">{usr.nombre}</td>
-                        <td className="px-6 py-4 text-sm text-gray-500">{usr.correo}</td>
-                        <td className="px-6 py-4">
+                      <tr key={usr.id} className="hover:bg-[#F5F5F5] transition-colors">
+                        <td data-label="Nombre" className="px-6 py-4 text-sm font-medium text-[#1A1A1A]">{usr.nombre}</td>
+                        <td data-label="Correo" className="px-6 py-4 text-sm text-[#6B7280]">{usr.correo}</td>
+                        <td data-label="Rol" className="px-6 py-4">
                           <span
-                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                            className={`inline-flex items-center gap-1 ${
                               usr.rol === 'ADMIN'
-                                ? 'bg-purple-100 text-purple-800'
-                                : 'bg-blue-100 text-blue-800'
+                                ? 'alm-badge alm-badge-purple'
+                                : 'alm-badge bg-blue-100 text-blue-800'
                             }`}
                           >
-                            <Shield className="w-3 h-3 mr-1" />
+                            <Shield className="w-3 h-3" />
                             {usr.rol}
                           </span>
                         </td>
-                        <td className="px-6 py-4">
+                        <td data-label="Estado" className="px-6 py-4">
                           <span
-                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                              usr.activo
-                                ? 'bg-green-100 text-green-800'
-                                : 'bg-red-100 text-red-800'
+                            className={`alm-badge ${
+                              usr.activo ? 'alm-badge-green' : 'alm-badge-red'
                             }`}
                           >
                             {usr.activo ? 'Activo' : 'Inactivo'}
                           </span>
                         </td>
-                        <td className="px-6 py-4 text-right">
+                        <td data-label="" className="px-6 py-4 text-right">
                           <div className="flex items-center justify-end gap-2">
                             {isAdmin && usr.id !== user.id && (
                               <button
@@ -199,8 +183,11 @@ export default function UsuariosPage() {
                     ))}
                     {usuarios.length === 0 && (
                       <tr>
-                        <td colSpan={5} className="px-6 py-12 text-center text-gray-500">
-                          No hay usuarios registrados
+                        <td colSpan={5}>
+                          <div className="alm-empty">
+                            <div className="alm-empty-icon">👤</div>
+                            <p>No hay usuarios registrados</p>
+                          </div>
                         </td>
                       </tr>
                     )}
@@ -211,6 +198,20 @@ export default function UsuariosPage() {
           )}
         </main>
       </div>
+
+      <nav className="lg:hidden alm-bottom-nav">
+        {menuItems.map((item) => (
+          <button key={item.href} onClick={() => router.push(item.href)}
+            className={`alm-bottom-nav-item ${item.active ? 'active' : ''}`}>
+            <item.icon className="w-5 h-5" />
+            <span>{item.label}</span>
+          </button>
+        ))}
+        <button onClick={logout} className="alm-bottom-nav-item">
+          <LogOut className="w-5 h-5" />
+          <span>Salir</span>
+        </button>
+      </nav>
     </div>
   );
 }

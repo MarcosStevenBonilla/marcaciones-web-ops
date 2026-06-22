@@ -24,8 +24,6 @@ import {
   Loader2,
   CheckCircle,
   XCircle,
-  Menu,
-  X,
   Search,
 } from 'lucide-react';
 
@@ -44,7 +42,6 @@ export default function DashboardPage() {
   const [resultado, setResultado] = useState<{ tipo: 'success' | 'error'; message: string } | null>(null);
   const [gps, setGps] = useState<{ lat: number; lng: number; precision?: number } | null>(null);
   const geoOptions: PositionOptions = { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 };
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [empleadoSearch, setEmpleadoSearch] = useState('');
   const [empleadoDropdownOpen, setEmpleadoDropdownOpen] = useState(false);
   const [operativoSearch, setOperativoSearch] = useState('');
@@ -176,7 +173,7 @@ export default function DashboardPage() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-blue-900" />
+        <div className="alm-spinner alm-spinner-lg" />
       </div>
     );
   }
@@ -195,82 +192,55 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen flex flex-col lg:flex-row">
-      <aside
-        className={`fixed inset-y-0 left-0 z-30 w-64 bg-blue-900 text-white transform transition-transform ${
-          sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        } lg:relative lg:translate-x-0`}
-      >
-        <div className="p-6">
+      <aside className="hidden lg:flex lg:w-64 alm-sidebar shrink-0 flex-col">
+        <div className="alm-sidebar-brand">
           <h2 className="text-xl font-bold">ALMAPAC</h2>
-          <p className="text-blue-200 text-sm mt-1">Sistema de Marcaciones</p>
+          <p className="text-sm mt-1" style={{ opacity: 0.7 }}>Sistema de Marcaciones</p>
         </div>
-        <nav className="mt-4 space-y-1 px-3">
+        <nav className="alm-sidebar-nav">
           {menuItems.map((item) => (
-            <button
-              key={item.href}
-              onClick={() => { router.push(item.href); setSidebarOpen(false); }}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
-                item.active ? 'bg-blue-800 text-white' : 'text-blue-100 hover:bg-blue-800 hover:text-white'
-              }`}
-            >
+            <button key={item.href} onClick={() => router.push(item.href)}
+              className={`alm-sidebar-item ${item.active ? 'active' : ''}`}>
               <item.icon className="w-5 h-5" />
               {item.label}
             </button>
           ))}
         </nav>
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-blue-800">
-          <div className="text-sm text-blue-200 mb-2 truncate">{user.nombre}</div>
-          <button onClick={logout} className="flex items-center gap-2 text-blue-200 hover:text-white text-sm transition-colors">
+        <div className="alm-sidebar-footer">
+          <div className="text-sm mb-2 truncate" style={{ opacity: 0.7 }}>{user.nombre}</div>
+          <button onClick={logout} className="alm-sidebar-item" style={{ padding: '8px 0', color: 'rgba(255,255,255,0.7)' }}>
             <LogOut className="w-4 h-4" /> Cerrar Sesión
           </button>
         </div>
       </aside>
 
       <div className="flex-1 flex flex-col min-h-screen">
-        <header className="bg-white border-b border-gray-200 px-4 lg:px-6 py-4 flex items-center gap-4 lg:hidden">
-          <button onClick={() => setSidebarOpen(!sidebarOpen)} className="text-gray-600">
-            {sidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
+        <header className="lg:hidden bg-white px-6 py-4 flex items-center border-b" style={{borderColor: '#E5E5E5'}}>
           <h1 className="font-semibold text-lg">Dashboard</h1>
         </header>
 
         <main className="flex-1 p-3 sm:p-4 lg:p-6 pb-20 lg:pb-6 max-w-lg mx-auto w-full lg:max-w-2xl xl:max-w-4xl">
-          <h1 className="text-2xl font-bold text-gray-900 mb-6 hidden lg:block">Dashboard</h1>
+          <h1 className="text-2xl font-bold text-[#1A1A1A] mb-6 hidden lg:block">Dashboard</h1>
 
-          <div className="grid grid-cols-3 gap-2 sm:gap-3 lg:gap-6 mb-4 sm:mb-6">
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-2.5 sm:p-4 lg:p-6 flex items-center gap-2 sm:gap-3 lg:gap-4 min-w-0">
-              <div className="bg-blue-100 p-1.5 sm:p-2 lg:p-3 rounded-full shrink-0">
-                <Users className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-blue-900" />
-              </div>
-              <div className="min-w-0">
-                <p className="text-xs sm:text-xs lg:text-sm text-gray-500 truncate">Bienvenido</p>
-                <p className="font-semibold text-xs sm:text-sm lg:text-base text-gray-900 truncate">{user.nombre}</p>
-              </div>
-            </div>
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-2.5 sm:p-4 lg:p-6 flex items-center gap-2 sm:gap-3 lg:gap-4 min-w-0">
-              <div className="bg-green-100 p-1.5 sm:p-2 lg:p-3 rounded-full shrink-0">
-                <Building2 className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-green-700" />
-              </div>
-              <div className="min-w-0">
-                <p className="text-xs sm:text-xs lg:text-sm text-gray-500">Rol</p>
-                <p className="font-semibold text-xs sm:text-sm lg:text-base text-gray-900 truncate">{user.rol}</p>
-              </div>
-            </div>
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-2.5 sm:p-4 lg:p-6 flex items-center gap-2 sm:gap-3 lg:gap-4 min-w-0">
-              <div className={`p-2 lg:p-3 rounded-full shrink-0 ${
-                gps?.precision != null
-                  ? gps.precision < 20 ? 'bg-green-100' : gps.precision < 50 ? 'bg-yellow-100' : 'bg-red-100'
-                  : 'bg-gray-100'
-              }`}>
-                <MapPin className={`w-5 h-5 lg:w-6 lg:h-6 ${
-                  gps?.precision != null
-                    ? gps.precision < 20 ? 'text-green-700' : gps.precision < 50 ? 'text-yellow-700' : 'text-red-700'
-                    : 'text-gray-500'
-                }`} />
-              </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-3 lg:gap-6 mb-4 sm:mb-6">
+            <div className="alm-kpi-card">
+              <div className="alm-kpi-icon"><Users className="w-5 h-5" /></div>
               <div>
-                <p className="text-xs lg:text-sm text-gray-500">GPS</p>
-                <p className="font-semibold text-xs sm:text-sm lg:text-base text-gray-900 truncate">
+                <div className="alm-kpi-value" style={{fontSize: '16px'}}>{user.nombre}</div>
+                <div className="alm-kpi-label" style={{marginLeft: 0}}>Bienvenido</div>
+              </div>
+            </div>
+            <div className="alm-kpi-card">
+              <div className="alm-kpi-icon"><Building2 className="w-5 h-5" /></div>
+              <div>
+                <div className="alm-kpi-value" style={{fontSize: '16px'}}>{user.rol}</div>
+                <div className="alm-kpi-label" style={{marginLeft: 0}}>Rol</div>
+              </div>
+            </div>
+            <div className="alm-kpi-card">
+              <div className="alm-kpi-icon"><MapPin className="w-5 h-5" /></div>
+              <div>
+                <div className="alm-kpi-value" style={{fontSize: '16px'}}>
                   {gps ? `${gps.lat.toFixed(4)}, ${gps.lng.toFixed(4)}` : 'Esperando...'}
                   {gps?.precision != null && (
                     <span className={`ml-1 text-xs ${
@@ -279,16 +249,17 @@ export default function DashboardPage() {
                       ±{gps.precision}m
                     </span>
                   )}
-                </p>
+                </div>
+                <div className="alm-kpi-label" style={{marginLeft: 0}}>GPS</div>
               </div>
             </div>
           </div>
 
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-3 sm:p-4 lg:p-6">
-            <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">Registro de Asistencia</h2>
+          <div className="alm-card p-3 sm:p-4 lg:p-6">
+                    <h2 className="alm-section-title">Registro de Asistencia</h2>
 
             {step === 'idle' && (
-              <div className="space-y-4">
+              <div className="space-y-4 alm-step-in">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Operativo</label>
                   <div className="relative mb-2">
@@ -298,7 +269,7 @@ export default function DashboardPage() {
                       value={operativoSearch}
                       onChange={(e) => setOperativoSearch(e.target.value)}
                       placeholder="Buscar operativo..."
-                      className="w-full pl-9 pr-4 py-2.5 sm:py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm"
+                      className="alm-search"
                     />
                   </div>
                   {filteredOperativos.length === 0 ? (
@@ -311,19 +282,19 @@ export default function DashboardPage() {
                         <button
                           key={op.id}
                           onClick={() => setSelectedOperativo(op.id)}
-                          className={`rounded-xl p-3 sm:p-4 text-left transition-all border-2 min-h-[56px] sm:min-h-[64px] ${
+                          className={`rounded-xl p-3 sm:p-4 text-left transition-all min-h-[56px] sm:min-h-[64px] ${
                             selectedOperativo === op.id
-                              ? 'border-blue-900 bg-blue-50 ring-2 ring-blue-200'
-                              : 'border-gray-200 bg-white hover:border-gray-300'
+                              ? 'border-2 border-[#0000A3] bg-[#E8EAF3]'
+                              : 'border-2 border-[#E5E5E5] bg-white hover:border-[#0000A3]/30'
                           }`}
                         >
                           <div className={`font-semibold text-xs sm:text-sm leading-tight ${
-                            selectedOperativo === op.id ? 'text-blue-900' : 'text-gray-900'
+                            selectedOperativo === op.id                            ? 'text-[#0000A3]' : 'text-gray-900'
                           }`}>
                             {op.nombre}
                           </div>
                           {selectedOperativo === op.id && (
-                            <div className="text-[10px] sm:text-xs text-blue-600 mt-0.5">Seleccionado</div>
+                            <div className="text-[10px] sm:text-xs text-[#0000A3] mt-0.5">Seleccionado</div>
                           )}
                         </button>
                       ))}
@@ -336,11 +307,11 @@ export default function DashboardPage() {
                 )}
 
                 {selectedOperativo ? (
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 gap-3 alm-fade-in">
                     <button
                       onClick={() => startRegistrando(Number(selectedOperativo), 'ENTRADA')}
                       disabled={!isSupervisor}
-                      className="bg-green-600 hover:bg-green-700 text-white font-semibold py-4 sm:py-5 px-4 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex flex-col items-center justify-center gap-1.5 text-sm sm:text-base min-h-[80px]"
+                      className="alm-btn-success flex flex-col items-center justify-center gap-1.5 text-sm sm:text-base min-h-[80px]"
                     >
                       <LogOut className="w-6 h-6 sm:w-7 sm:h-7 rotate-180" />
                       Registrar Entrada
@@ -348,7 +319,7 @@ export default function DashboardPage() {
                     <button
                       onClick={() => startRegistrando(Number(selectedOperativo), 'SALIDA')}
                       disabled={!isSupervisor}
-                      className="bg-orange-600 hover:bg-orange-700 text-white font-semibold py-4 sm:py-5 px-4 rounded-xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex flex-col items-center justify-center gap-1.5 text-sm sm:text-base min-h-[80px]"
+                      className="alm-glass-btn flex flex-col items-center justify-center gap-1.5 text-sm sm:text-base min-h-[80px]"
                     >
                       <LogOut className="w-6 h-6 sm:w-7 sm:h-7" />
                       Registrar Salida
@@ -361,8 +332,8 @@ export default function DashboardPage() {
             )}
 
             {step === 'registrando' && (
-              <div className="space-y-3 sm:space-y-4">
-                <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg text-xs sm:text-sm">
+              <div className="space-y-3 sm:space-y-4 alm-step-in">
+                <div className="alm-alert text-xs sm:text-sm">
                   Escanea el QR del empleado o búscalo por nombre
                 </div>
 
@@ -381,24 +352,24 @@ export default function DashboardPage() {
                       onChange={(e) => { setEmpleadoSearch(e.target.value); setEmpleadoDropdownOpen(true); }}
                       onFocus={() => setEmpleadoDropdownOpen(true)}
                       placeholder="Nombre o código..."
-                      className="w-full pl-9 pr-4 py-2.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm"
+                      className="alm-search"
                     />
                   </div>
                   {empleadoDropdownOpen && (
                     <div className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
                       {filteredEmpleados.length === 0 ? (
-                        <p className="px-4 py-3 text-sm text-gray-500">Sin resultados</p>
+                        <p className="px-4 py-3 text-sm text-[#6B7280]">Sin resultados</p>
                       ) : (
                         filteredEmpleados.slice(0, 20).map((emp) => (
                           <button
                             key={emp.id}
                             onClick={() => handleManualSelect(emp)}
-                            className="w-full text-left px-4 py-3 hover:bg-blue-50 transition-colors border-b border-gray-100 last:border-0"
+                            className="w-full text-left px-4 py-3 hover:bg-[#E8EAF3] transition-colors border-b border-gray-100 last:border-0"
                           >
-                            <div className="font-medium text-sm text-gray-900">
+                            <div className="font-medium text-sm text-[#1A1A1A]">
                               {emp.nombre} {emp.apellido}
                             </div>
-                            <div className="text-xs text-gray-500 font-mono">{emp.codigo_empleado}</div>
+                            <div className="text-xs text-[#6B7280] font-mono">{emp.codigo_empleado}</div>
                           </button>
                         ))
                       )}
@@ -406,43 +377,39 @@ export default function DashboardPage() {
                   )}
                 </div>
 
-                <button onClick={reiniciar} className="w-full border border-gray-300 text-gray-700 font-medium py-3 sm:py-2.5 px-4 rounded-lg hover:bg-gray-50 transition-colors text-sm min-h-[44px]">
+                <button onClick={reiniciar} className="w-full alm-btn-secondary text-sm min-h-[44px]">
                   Cancelar
                 </button>
               </div>
             )}
 
             {(step === 'confirming' || step === 'processing') && empleado && (
-              <div className="space-y-4">
+              <div className="space-y-4 alm-step-in">
                 <div className="text-center mb-2">
-                  <div className="text-3xl font-bold text-gray-900 tabular-nums">
+                  <div className="text-3xl font-bold text-[#1A1A1A] tabular-nums">
                     {currentTime.toLocaleTimeString('es-SV', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })}
                   </div>
-                  <div className="text-sm text-gray-500">
+                  <div className="text-sm text-[#6B7280]">
                     {currentTime.toLocaleDateString('es-SV', { day: '2-digit', month: 'long', year: 'numeric' })}
                   </div>
                 </div>
 
-                <div className="bg-gray-50 rounded-xl p-3 sm:p-4 space-y-2 sm:space-y-3">
+                <div className="alm-card-flat p-3 sm:p-4 bg-[#F5F5F5] space-y-2 sm:space-y-3">
                   <div className="flex items-center justify-between">
-                    <h3 className="font-semibold text-gray-900 text-sm sm:text-base">Confirmar Marcación</h3>
-                    <span className={`px-3 py-1 rounded-lg text-xs sm:text-sm font-semibold ${
-                      tipoMarcacion === 'ENTRADA'
-                        ? 'bg-green-100 text-green-800'
-                        : 'bg-orange-100 text-orange-800'
-                    }`}>
+                    <h3 className="font-semibold text-[#1A1A1A] text-sm sm:text-base">Confirmar Marcación</h3>
+                    <span className={`alm-badge ${tipoMarcacion === 'ENTRADA' ? 'alm-badge-green' : 'alm-badge-orange'}`}>
                       {tipoMarcacion}
                     </span>
                   </div>
                   <div className="grid grid-cols-[auto_1fr] gap-x-3 sm:gap-x-4 gap-y-2 sm:gap-y-3 text-xs sm:text-sm">
-                    <span className="text-gray-500 whitespace-nowrap">Empleado:</span>
-                    <span className="font-medium text-gray-900 break-words min-w-0">{empleado.nombre} {empleado.apellido}</span>
-                    <span className="text-gray-500 whitespace-nowrap">Código:</span>
-                    <span className="font-medium font-mono text-gray-900 break-all min-w-0">{empleado.codigo_empleado}</span>
-                    <span className="text-gray-500 whitespace-nowrap">Puesto:</span>
-                    <span className="font-medium text-gray-900 break-words min-w-0">{empleado.puesto?.nombre || 'N/A'}</span>
-                    <span className="text-gray-500 whitespace-nowrap">GPS:</span>
-                    <span className="font-medium text-gray-900 flex items-center gap-1.5 min-w-0">
+                    <span className="text-[#6B7280] whitespace-nowrap">Empleado:</span>
+                    <span className="font-medium text-[#1A1A1A] break-words min-w-0">{empleado.nombre} {empleado.apellido}</span>
+                    <span className="text-[#6B7280] whitespace-nowrap">Código:</span>
+                    <span className="font-medium font-mono text-[#1A1A1A] break-all min-w-0">{empleado.codigo_empleado}</span>
+                    <span className="text-[#6B7280] whitespace-nowrap">Puesto:</span>
+                    <span className="font-medium text-[#1A1A1A] break-words min-w-0">{empleado.puesto?.nombre || 'N/A'}</span>
+                    <span className="text-[#6B7280] whitespace-nowrap">GPS:</span>
+                    <span className="font-medium text-[#1A1A1A] flex items-center gap-1.5 min-w-0">
                       <span className={`inline-block w-2 h-2 rounded-full ${
                         gps?.precision != null
                           ? gps.precision < 20 ? 'bg-green-500' : gps.precision < 50 ? 'bg-yellow-500' : 'bg-red-500'
@@ -454,10 +421,10 @@ export default function DashboardPage() {
                 </div>
 
                 <div className="flex gap-2 sm:gap-3">
-                  <button onClick={reiniciar} disabled={step === 'processing'} className="flex-1 border border-gray-300 text-gray-700 font-medium py-3 px-3 sm:px-4 rounded-xl hover:bg-gray-50 transition-colors disabled:opacity-50 text-xs sm:text-sm min-h-[44px]">
+                  <button onClick={reiniciar} disabled={step === 'processing'} className="flex-1 alm-btn-secondary text-xs sm:text-sm min-h-[44px]">
                     Cancelar
                   </button>
-                  <button onClick={confirmar} disabled={step === 'processing'} className="flex-1 bg-blue-900 hover:bg-blue-800 text-white font-medium py-3 px-3 sm:px-4 rounded-xl transition-colors disabled:opacity-50 flex items-center justify-center gap-1.5 sm:gap-2 text-xs sm:text-sm min-h-[44px]">
+                  <button onClick={confirmar} disabled={step === 'processing'} className="flex-1 alm-btn-primary text-xs sm:text-sm min-h-[44px] flex items-center justify-center gap-1.5 sm:gap-2">
                     {step === 'processing' ? (
                       <><Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" /> Procesando...</>
                     ) : (
@@ -469,7 +436,7 @@ export default function DashboardPage() {
             )}
 
             {(step === 'done' || step === 'error') && resultado && (
-              <div className="text-center space-y-4 py-4 sm:py-6">
+              <div className={`${resultado.tipo === 'success' ? 'alm-alert-success' : 'alm-alert-error'} text-center space-y-4 py-4 sm:py-6 alm-step-in`}>
                 <div className={`inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 rounded-full ${resultado.tipo === 'success' ? 'bg-green-100' : 'bg-red-100'}`}>
                   {resultado.tipo === 'success' ? <CheckCircle className="w-7 h-7 sm:w-8 sm:h-8 text-green-600" /> : <XCircle className="w-7 h-7 sm:w-8 sm:h-8 text-red-600" />}
                 </div>
@@ -479,7 +446,7 @@ export default function DashboardPage() {
                 {resultado.tipo === 'success' ? (
                   <p className="text-xs sm:text-sm text-gray-400">Volviendo al inicio...</p>
                 ) : (
-                  <button onClick={reiniciar} className="bg-blue-900 hover:bg-blue-800 text-white font-medium py-3 px-8 rounded-xl transition-colors text-sm sm:text-base min-h-[44px]">
+                  <button onClick={reiniciar} className="alm-btn-primary text-sm sm:text-base min-h-[44px]">
                     Nueva Marcación
                   </button>
                 )}
@@ -490,19 +457,18 @@ export default function DashboardPage() {
       </div>
 
       {/* Bottom tab nav for mobile */}
-      <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-40 flex">
+      <nav className="lg:hidden alm-bottom-nav">
         {menuItems.map((item) => (
-          <button
-            key={item.href}
-            onClick={() => router.push(item.href)}
-            className={`flex-1 flex flex-col items-center py-2 text-[11px] sm:text-xs gap-0.5 transition-colors min-h-[52px] ${
-              item.active ? 'text-blue-900 font-semibold' : 'text-gray-500'
-            }`}
-          >
+          <button key={item.href} onClick={() => router.push(item.href)}
+            className={`alm-bottom-nav-item ${item.active ? 'active' : ''}`}>
             <item.icon className="w-5 h-5" />
             <span>{item.label}</span>
           </button>
         ))}
+        <button onClick={logout} className="alm-bottom-nav-item">
+          <LogOut className="w-5 h-5" />
+          <span>Salir</span>
+        </button>
       </nav>
     </div>
   );
@@ -557,7 +523,7 @@ function QrScanner({
 
   return (
     <div className="space-y-3 sm:space-y-4">
-      <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg text-xs sm:text-sm">
+      <div className="alm-alert text-xs sm:text-sm">
         Apunta la cámara al código QR del empleado
       </div>
 
@@ -571,9 +537,9 @@ function QrScanner({
           value={manualCode}
           onChange={(e) => setManualCode(e.target.value)}
           placeholder="O ingresa el código manualmente..."
-          className="flex-1 px-3 sm:px-4 py-2.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm min-h-[44px]"
+          className="flex-1 alm-input min-h-[44px]"
         />
-        <button type="submit" className="bg-blue-900 hover:bg-blue-800 text-white font-medium py-2.5 sm:py-2 px-4 rounded-lg transition-colors text-sm shrink-0 min-h-[44px]">
+        <button type="submit" className="alm-btn-primary text-sm shrink-0 min-h-[44px]">
           Buscar
         </button>
       </form>
